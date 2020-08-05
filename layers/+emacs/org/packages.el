@@ -357,7 +357,6 @@ Will work on both org-mode and any mode that accepts plain html."
       ;; Add global evil-leader mappings. Used to access org-agenda
       ;; functionalities – and a few others commands – from any other mode.
       (spacemacs/declare-prefix "ao" "org")
-      (spacemacs/declare-prefix "aof" "feeds")
       (spacemacs/declare-prefix "aoC" "clock")
       (spacemacs/set-leader-keys
         ;; org-agenda
@@ -366,8 +365,6 @@ Will work on both org-mode and any mode that accepts plain html."
         "aoa" 'org-agenda-list
         "aoc" 'org-capture
         "aoe" 'org-store-agenda-views
-        "aofi" 'org-feed-goto-inbox
-        "aofu" 'org-feed-update-all
 
         ;; Clock
         ;; These keybindings should match those under the "mC" prefix (above)
