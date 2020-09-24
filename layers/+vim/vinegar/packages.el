@@ -44,7 +44,6 @@
     (evilified-state-evilify dired-mode dired-mode-map
       "j"         'vinegar/move-down
       "k"         'vinegar/move-up
-      "-"         'vinegar/up-directory
       "0"         'dired-back-to-start-of-files
       "="         'vinegar/dired-diff
       (kbd "C-j") 'dired-next-subdir
