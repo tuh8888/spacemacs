@@ -1,6 +1,6 @@
 ;;; packages.el --- Spacemacs Evil Layer packages File
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -13,6 +13,7 @@
       '(
         evil-anzu
         evil-args
+        evil-collection
         evil-cleverparens
         evil-ediff
         evil-escape
@@ -98,6 +99,15 @@
   (use-package evil-ediff
     :after (ediff)
     :if (memq dotspacemacs-editing-style '(hybrid vim))))
+
+
+(defun spacemacs-evil/init-evil-collection ()
+  (use-package evil-collection
+    :after evil
+    :config
+    (setq evil-collection-mode-list spacemacs-evil-collection-allowed-list)
+    (setq evil-collection-want-unimpaired-p nil)
+    (evil-collection-init)))
 
 (defun spacemacs-evil/init-evil-escape ()
   (use-package evil-escape

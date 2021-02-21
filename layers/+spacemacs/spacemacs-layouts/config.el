@@ -1,6 +1,6 @@
 ;;; config.el --- Spacemacs Layouts Layer configuration File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -73,5 +73,5 @@ in case none of the regular names can be used for a new layout.")
 (defvar spacemacs--layout-local-variables nil
   "List of variables that will be local to the current layout.")
 
-(defvar spacemacs--layout-local-map (ht-create)
+(defvar spacemacs--layout-local-map (spacemacs-ht-create)
   "Map of layouts to their local variable values.")

@@ -1,6 +1,6 @@
 ;;; config.el --- Markdown Layer Configuration File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -13,6 +13,10 @@
 
 (defvar markdown-live-preview-engine 'eww
   "Possibe values are `eww' (built-in browser) or `vmd' (installed with `npm').")
+
+(defvar markdown-executable nil
+  "When non-nil, use the specified command if it's found on PATH.
+Otherwise, use one of \"markdown\", \"pandoc\", or \"markdown_py\" when it's available.")
 
 (defvar markdown-mmm-auto-modes
   '(

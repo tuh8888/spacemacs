@@ -1,6 +1,6 @@
-;;; init.el --- Spacemacs Initialization File
+;;; init.el --- Spacemacs Initialization File -*- no-byte-compile: t -*-
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -24,6 +24,18 @@
       nil (not init-file-debug))
 (load (concat spacemacs-core-directory "core-dumper.el")
       nil (not init-file-debug))
+
+;; Remove compiled core files if they become stale or Emacs version has changed.
+(load (concat spacemacs-core-directory "core-compilation.el")
+      nil (not init-file-debug))
+(load spacemacs--last-emacs-version-file t (not init-file-debug))
+(when (or (not (string= spacemacs--last-emacs-version emacs-version))
+          (spacemacs//dir-contains-stale-byte-compiled-files-p
+           spacemacs-core-directory))
+  (spacemacs//remove-byte-compiled-files-in-dir spacemacs-core-directory))
+;; Update saved Emacs version.
+(unless (string= spacemacs--last-emacs-version emacs-version)
+  (spacemacs//update-last-emacs-version))
 
 (if (not (version<= spacemacs-emacs-min-version emacs-version))
     (error (concat "Your version of Emacs (%s) is too old. "

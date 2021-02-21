@@ -18,8 +18,7 @@
     eldoc
     flycheck
     (flycheck-golangci-lint :toggle (and go-use-golangci-lint
-                                         (configuration-layer/package-used-p
-                                          'flycheck)))
+                                         (configuration-layer/package-used-p 'flycheck)))
     ggtags
     helm-gtags
     go-eldoc
@@ -78,7 +77,7 @@
     :init (spacemacs/set-leader-keys-for-major-mode 'go-mode
             "rs" 'go-fill-struct)))
 
-(defun go/init-go-gen-test()
+(defun go/init-go-gen-test ()
   (use-package go-gen-test
     :defer t
     :init
@@ -109,13 +108,13 @@
         "fr" 'go-guru-referrers
         "fs" 'go-guru-callstack))))
 
-(defun go/init-go-impl()
+(defun go/init-go-impl ()
   (use-package go-impl
     :defer t
     :init (spacemacs/set-leader-keys-for-major-mode 'go-mode
             "ri" 'go-impl)))
 
-(defun go/init-go-mode()
+(defun go/init-go-mode ()
   (use-package go-mode
     :defer t
     :init

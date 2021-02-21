@@ -1,6 +1,6 @@
 ;;; layers.el --- Lua Layer declarations File for Spacemacs
 ;;
-;; Copyright (c) 2012-2019 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Lin Sun <sunlin7@yahoo.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -10,5 +10,5 @@
 ;;; License: GPLv3
 
 (when (and (boundp 'lua-backend)
-           (string-match-p "^lsp-.*" (symbol-name lua-backend)))
+           (eq lua-backend 'lsp))
   (configuration-layer/declare-layer-dependencies '(lsp)))

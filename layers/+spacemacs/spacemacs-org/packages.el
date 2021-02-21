@@ -1,6 +1,6 @@
 ;;; packages.el --- spacemacs-org layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Boris Buliga <d12frosted@d12frosted.local>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -63,7 +63,7 @@
       (evil-define-key 'normal org-mode-map (kbd "RET") 'org-open-at-point)))))
 
 (defun spacemacs-org/init-org-superstar ()
-  (use-package org-super-star
+  (use-package org-superstar
     :defer t
     :init (add-hook 'org-mode-hook 'org-superstar-mode)))
 

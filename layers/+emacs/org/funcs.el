@@ -1,6 +1,6 @@
 ;;; funcs.el --- Org Layer functions File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -11,6 +11,20 @@
 
 ;; Autoload space-doc-mode
 (autoload 'space-doc-mode "space-doc" nil 'interactive)
+
+(defun org-clocks-prefix ()
+  (if org-enable-org-contacts-support
+      "clocks/contacts"
+    "clocks"))
+
+(defun org-contacts-find-file ()
+  "Open first contact file"
+  (interactive)
+  (if (bound-and-true-p org-contacts-files)
+      (find-file (car org-contacts-files))
+    (message "No specific org-contacts-files defined. Org-contacts uses all org files.")))
+
+
 
 (defun org-projectile/capture (&optional arg)
   (interactive "P")
@@ -49,6 +63,14 @@
   (with-eval-after-load 'evil-surround
     (add-to-list 'evil-surround-pairs-alist '(?: . spacemacs//surround-drawer))
     (add-to-list 'evil-surround-pairs-alist '(?# . spacemacs//surround-code))))
+
+(defun spacemacs//org-maybe-activate-evil-insert (&rest _)
+  "Switch to evil insert state if the current state is normal.
+Useful as an :after advice for commands that insert something
+into buffer, but are not Evil-aware (e.g. `org-insert-item')."
+  (when (and (member dotspacemacs-editing-style '(vim hybrid))
+             (evil-normal-state-p))
+    (evil-insert-state)))
 
 
 

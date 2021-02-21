@@ -1,6 +1,6 @@
 ;;; packages.el --- Spacemacs Purpose Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Bar Magal
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -155,5 +155,7 @@
       (setcdr purpose-mode-map nil)
       (spacemacs|diminish purpose-mode)
       (purpose-x-golden-ratio-setup)
+
       ;; Show magit-log-select and diff in two windows
-      (purpose-x-magit-multi-on))))
+      (with-eval-after-load 'magit
+        (purpose-x-magit-multi-on)))))

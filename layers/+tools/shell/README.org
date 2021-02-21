@@ -34,6 +34,7 @@
 - [[#key-bindings][Key bindings]]
   - [[#multi-term][Multi-term]]
   - [[#eshell-1][Eshell]]
+  - [[#vterm][vterm]]
 
 * Description
 This layer configures the various shells available in Emacs.
@@ -299,7 +300,7 @@ Some advanced configuration is setup for =eshell= in this layer:
 | ~SPC a t s T~ | Open, close or go to a =term=                              |
 | ~TAB~         | browse completion with =helm=                              |
 | ~SPC m H~     | browse history with =helm= (works in =eshell= and =shell=) |
-| ~SPC a s v~   | Open, close or go to a =vterm=                             |
+| ~SPC a t s v~ | Open, close or go to a =vterm=                             |
 | ~C-j~         | next item in history                                       |
 | ~C-k~         | previous item in history                                   |
 
@@ -326,3 +327,14 @@ in the current buffer instead of a popup.
 | Key binding        | Description                                       |
 |--------------------+---------------------------------------------------|
 | ~SPC m H~ or ~M-l~ | shell commands history using a helm or ivy buffer |
+
+** vterm
+~M-r~ will be bound to search for the command history when the variable
+=spacemacs-vterm-history-file-location= is set to the path to your shell history file.
+
+For example with bash
+
+#+BEGIN_SRC elisp
+  (shell :variables
+         spacemacs-vterm-history-file-location "~/.bash_history")
+#+END_SRC

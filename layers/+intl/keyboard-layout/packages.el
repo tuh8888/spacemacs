@@ -1,6 +1,6 @@
 ;;; packages.el --- keyboard-layout Layer Packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Fabien Dubosson <fabien.dubosson@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -453,7 +453,15 @@
     :colemak-jkhl
     (kl/evil-correct-keys 'visual magit-mode-map
       "j"
-      "k")))
+      "k")
+    :colemak-hnei
+    (progn
+      (kl/evil-correct-keys 'normal magit-mode-map
+        "j"
+        "k")
+      (kl/evil-correct-keys 'visual magit-mode-map
+        "j"
+        "k"))))
 
 (defun keyboard-layout/pre-init-mu4e ()
   (kl|config mu4e

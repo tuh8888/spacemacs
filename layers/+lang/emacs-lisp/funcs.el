@@ -1,6 +1,6 @@
 ;;; funcs.el --- Emacs Lisp functions File
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -60,15 +60,14 @@ Unlike `eval-defun', this does not go to topmost function."
 
 (defun spacemacs//edebug-mode (&rest args)
   "Additional processing when `edebug-mode' is activated or deactivated."
-  (let ((evilified (or (eq 'vim dotspacemacs-editing-style)
-                       (and (eq 'hybrid dotspacemacs-editing-style)
-                            hybrid-style-enable-evilified-state))))
+  (let ((evilified? (or (eq 'vim dotspacemacs-editing-style)
+                        (and (eq 'hybrid dotspacemacs-editing-style)
+                             hybrid-style-enable-evilified-state))))
     (if (not edebug-mode)
         ;; disable edebug-mode
-        (when evilified (evil-normal-state))
+        (when evilified? (evil-evilified-state-exit))
       ;; enable edebug-mode
-      (when evilified (evil-evilified-state))
-      (evil-normalize-keymaps)
+      (when evilified? (evil-evilified-state))
       (when (and (fboundp 'golden-ratio-mode)
                  golden-ratio-mode)
         (golden-ratio)))))
@@ -105,6 +104,25 @@ Requires smartparens because all movement is done using `sp-forward-symbol'."
     (save-excursion
       (sp-forward-symbol)
       (call-interactively 'eval-last-sexp))))
+
+(defun spacemacs/eval-current-form-to-comment-sp (&optional arg)
+  "Same as `spacemacs/eval-current-form-sp' but inserts output as a comment."
+  (interactive "p")
+  (require 'smartparens)
+  (let ((evil-move-beyond-eol t))
+    ;; evil-move-beyond-eol disables the evil advices around eval-last-sexp
+    (save-excursion
+      (let ((max 10))
+        (while (and (> max 0)
+                    (sp-point-in-string-or-comment))
+          (decf max)
+          (sp-up-sexp)))
+      (sp-up-sexp arg)
+      (let ((ret-val (format ";; %S" (call-interactively 'eval-last-sexp))))
+        (goto-char (point-at-eol))
+        (open-line 1)
+        (forward-line 1)
+        (insert ret-val)))))
 
 
 ;; elisp comment text-object definition

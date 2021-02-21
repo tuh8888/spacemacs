@@ -1,6 +1,6 @@
 ;;; packages.el --- Mandatory Bootstrap Layer packages File
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -21,7 +21,7 @@
         (hydra :step bootstrap)
         (use-package :step bootstrap)
         (which-key :step bootstrap)
-        ;; pre packages, initialized aftert the bootstrap packages
+        ;; pre packages, initialized after the bootstrap packages
         ;; these packages can use use-package
         (dotenv-mode :step pre)
         (evil-evilified-state :location local :step pre :protected t)
@@ -29,6 +29,7 @@
         (holy-mode :location local :step pre)
         (hybrid-mode :location (recipe :fetcher local) :step pre)
         (spacemacs-theme :location built-in)
+        dash
         ))
 
 
@@ -64,8 +65,14 @@
   ;; evil-mode is mandatory for Spacemacs to work properly
   ;; evil must be require explicitly, the autoload seems to not
   ;; work properly sometimes.
+  ;; `evil-collection' wants this value
+  (setq evil-want-keybinding nil)
   (require 'evil)
   (evil-mode 1)
+
+  (when (and (fboundp 'evil-set-undo-system)
+             (configuration-layer/package-used-p 'undo-tree))
+    (evil-set-undo-system 'undo-tree))
 
   ;; Use evil as a default jump handler
   (add-to-list 'spacemacs-default-jump-handlers 'evil-goto-definition)
@@ -90,6 +97,8 @@
 
   ;; Make the current definition and/or comment visible.
   (define-key evil-normal-state-map "zf" 'reposition-window)
+  ;; Make set-selective-display more discoverable to Evil folks
+  (define-key evil-normal-state-map "z$" 'spacemacs/toggle-selective-display)
   ;; toggle maximize buffer
   (define-key evil-window-map (kbd "o") 'spacemacs/toggle-maximize-buffer)
   (define-key evil-window-map (kbd "C-o") 'spacemacs/toggle-maximize-buffer)
@@ -337,6 +346,54 @@
     "Display a buffer with available key bindings."
     :evil-leader "tK")
 
+  (spacemacs/declare-prefix "tk" "which-key-persistent")
+  (setq which-key-toggle-of-message
+        "To exit which-key-persistent-mode use `which-key-toggle-persistent'.")
+  
+  (spacemacs|add-toggle which-key-toggle-persistent
+    :status which-key-persistent-popup
+    :on (setq which-key-persistent-popup t)
+    :off (setq which-key-persistent-popup nil)
+    :documentation
+    "Toggle on/off which-key-persistent-popup."
+    :evil-leader "tkk")
+
+  (spacemacs|add-toggle which-key-major-mode-map
+    :status which-key-persistent-popup
+    :on (progn
+          (setq which-key-persistent-popup t)
+          (which-key-show-major-mode))
+    :off (which-key-show-major-mode)
+    :documentation
+    "Show persistent major mode keymap.
+Press \\[which-key-toggle-persistent] to hide."
+    :off-message which-key-toggle-of-message
+    :evil-leader "tkm")
+
+  (spacemacs|add-toggle which-key-full-major-mode-map
+    :status which-key-persistent-popup
+    :on (progn
+          (setq which-key-persistent-popup t)
+          (which-key-show-full-major-mode))
+    :off (which-key-show-full-major-mode)
+    :documentation
+    "Show persistent full major mode keymap.
+Press \\[which-key-toggle-persistent] to hide."
+    :off-message which-key-toggle-of-message
+    :evil-leader "tkM")
+
+  (spacemacs|add-toggle which-key-top-level
+    :status which-key-persistent-popup
+    :on (progn
+          (setq which-key-persistent-popup t)
+          (which-key-show-top-level))
+    :off (which-key-show-top-level)
+    :documentation
+    "Show persistent top level keymap.
+Press \\[which-key-toggle-persistent] to hide."
+    :off-message which-key-toggle-of-message
+    :evil-leader "tkt")
+
   (spacemacs/set-leader-keys "hk" 'which-key-show-top-level)
 
   ;; Needed to avoid nil variable error before update to recent which-key
@@ -560,4 +617,8 @@
 
 (defun spacemacs-bootstrap/init-spacemacs-theme ()
   (use-package spacemacs-theme
+    :defer t))
+
+(defun spacemacs-bootstrap/init-dash ()
+  (use-package dash
     :defer t))

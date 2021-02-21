@@ -1,6 +1,6 @@
 ;;; config.el --- C/C++ Layer config File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -32,6 +32,18 @@ Rainbow semantic highlighting gives a unique color to each identifier.")
 
 By default `font-lock' is used to highlight the text, set the variable to
 `overlay' if you want to use overlays. Note that overlays can be slower.")
+
+
+;; dap
+
+(defvar c-c++-dap-adapters '(dap-cpptools)
+  "Debug adapters to use for IDE debug features.
+
+By default only `dap-cpptools' is used.
+
+Add `dap-cpptools' for the official Microsoft C/C++ Extension for VSCode.
+Add `dap-lldb' for the official LLDB project adapter.
+Add `dap-gdb-lldb' for the WebFreak Native Debug extension.")
 
 
 ;; rtags

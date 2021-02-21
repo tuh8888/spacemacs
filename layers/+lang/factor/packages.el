@@ -1,6 +1,6 @@
 ;;; packages.el --- Factor Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: timor <timor.dd@googlemail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -26,7 +26,7 @@
                t)
   (spacemacs/add-to-hooks 'spacemacs/load-yasnippet '(factor-mode-hook fuel-mode-hook)))
 
-(defun factor/init-fuel()
+(defun factor/init-fuel ()
   (use-package factor-mode
     :commands factor-mode run-factor fuel-mode
     :mode ("factor\\'" . factor-mode)
@@ -84,7 +84,7 @@
         "v" 'fuel-edit-vocabulary
         "r" 'fuel-refresh-all
         "Ts" 'fuel-stack-mode
-        "w" 'fuel-help
+        "h" 'fuel-help
         "Sv" 'fuel-scaffold-vocab
         )
 

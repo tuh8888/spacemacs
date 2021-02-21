@@ -17,6 +17,7 @@
     (eshell :location built-in)
     eshell-prompt-extras
     eshell-z
+    evil-collection
     helm
     ivy
     magit
@@ -71,8 +72,6 @@
             eshell-history-size 350
             ;; no duplicates in history
             eshell-hist-ignoredups t
-            ;; buffer shorthand -> echo foo > #'buffer
-            eshell-buffer-shorthand t
             ;; my prompt is easy enough to see
             eshell-highlight-prompt nil
             ;; treat 'echo' like shell echo
@@ -132,6 +131,9 @@
       (when (boundp 'eshell-output-filter-functions)
         (add-hook 'eshell-output-filter-functions #'eshell-truncate-buffer)))))
 
+(defun shell/pre-init-evil-collection ()
+  (add-to-list 'spacemacs-evil-collection-allowed-list 'vterm))
+
 (defun shell/init-eshell-prompt-extras ()
   (use-package eshell-prompt-extras
     :commands epe-theme-lambda
@@ -159,7 +161,9 @@
 (defun shell/pre-init-ivy ()
   (spacemacs|use-package-add-hook ivy
     :post-init
-    (add-hook 'eshell-mode-hook 'spacemacs/init-ivy-eshell)))
+    (add-hook 'eshell-mode-hook 'spacemacs/init-ivy-eshell))
+  (spacemacs/set-leader-keys-for-major-mode 'shell-mode
+    "H" 'counsel-shell-history))
 
 (defun shell/pre-init-magit ()
   (spacemacs|use-package-add-hook magit
@@ -219,6 +223,7 @@
              (t (comint-simple-send proc command))))))
   (add-hook 'shell-mode-hook 'shell-comint-input-sender-hook)
   (add-hook 'shell-mode-hook 'spacemacs/disable-hl-line-mode)
+
   (with-eval-after-load 'centered-cursor-mode
     (add-hook 'shell-mode-hook 'spacemacs//inhibit-global-centered-cursor-mode)))
 
@@ -339,12 +344,14 @@
       (define-key vterm-mode-map (kbd "M-p") 'vterm-send-up)
       (define-key vterm-mode-map (kbd "M-y") 'vterm-yank-pop)
       (define-key vterm-mode-map (kbd "M-/") 'vterm-send-tab)
+      (when spacemacs-vterm-history-file-location
+        (spacemacs//vterm-bind-m-r vterm-mode-map))
 
       (evil-define-key 'insert vterm-mode-map (kbd "C-y") 'vterm-yank)
 
       (evil-define-key 'normal vterm-mode-map
-        [escape] 'vterm--self-insert
-        [return] 'vterm--self-insert
+        [escape] 'vterm-send-escape
+        [return] 'vterm-send-return
         (kbd "p") 'vterm-yank
         (kbd "u") 'vterm-undo)
 

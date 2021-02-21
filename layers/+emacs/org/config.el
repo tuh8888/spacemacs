@@ -1,6 +1,6 @@
 ;;; config.el --- Org configuration File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -34,6 +34,9 @@ path, one file per project is used (and the path is relative to
 the project root). If it an absolute path, one global file is
 used.")
 
+(defvar org-enable-org-contacts-support nil
+  "If non-nil org-contacts is configured.")
+
 (defvar org-enable-org-journal-support nil
   "If non-nil org-journal is configured.")
 
@@ -55,3 +58,16 @@ are configured.")
 
 (defvar org-enable-verb-support nil
   "If non-nil, Verb (https://github.com/federicotdn/verb) is configured.")
+
+(defvar org-enable-roam-support nil
+  "If non-nil, org-roam (https://www.orgroam.com/) is configured")
+
+(defvar org-persp-startup-org-file nil
+  "If non-nil, opens the specified file instead of the first in org-agenda-files")
+
+(defvar org-persp-startup-with-agenda nil
+  "If non-nil, opens the specified agenda custom view")
+
+(defvar org-enable-valign nil
+  "If non-nil, enable valign-mode in org-mode buffers.
+ATTENTION: `valign-mode' will be laggy working with tables contain more than 100 lines.")

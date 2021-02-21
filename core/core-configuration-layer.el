@@ -1,7 +1,7 @@
 ;; -*- nameless-current-name: "configuration-layer" -*-
 ;;; core-configuration-layer.el --- Spacemacs Core File
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -17,7 +17,7 @@
 (require 'package)
 (require 'warnings)
 (require 'help-mode)
-(require 'ht)
+(require 'spacemacs-ht)
 (require 'core-dotspacemacs)
 (require 'core-funcs)
 (require 'core-progress-bar)
@@ -151,10 +151,10 @@ subdirectory of ROOT is used."
              :type list
              :documentation "List of package symbols declared in this layer.")
    (selected-packages :initarg :selected-packages
-             :initform 'all
-             :type (satisfies (lambda (x) (or (and (symbolp x) (eq 'all x))
-                                              (listp x))))
-             :documentation "List of selected package symbols.")
+                      :initform 'all
+                      :type (satisfies (lambda (x) (or (and (symbolp x) (eq 'all x))
+                                                       (listp x))))
+                      :documentation "List of selected package symbols.")
    (variables :initarg :variables
               :initform nil
               :type list
@@ -214,7 +214,7 @@ LAYER has to be installed for this method to work properly."
     (when (and (numberp rank)
                (not (eq 'unspecified shadow-candidates))
                (listp shadow-candidates))
-      (mapcar
+      (mapc
        (lambda (other)
          (let ((orank (cl-position other configuration-layer--used-layers)))
            ;; OTHER shadows LAYER if and only if OTHER's rank is bigger than
@@ -580,8 +580,9 @@ refreshed during the current session."
     ;; force dump
     (configuration-layer//load)
     (when (spacemacs/emacs-with-pdumper-set-p)
-      (configuration-layer/message (concat "--force-dump passed on the command line, "
-                         "forcing a redump."))
+      (configuration-layer/message
+       (concat "--force-dump passed on the command line or configuration has "
+               "been reloaded, forcing a redump."))
       (configuration-layer//dump-emacs)))
    ((spacemacs-is-dumping-p)
     ;; dumping
@@ -620,7 +621,7 @@ To prevent package from being installed or uninstalled set the variable
   (configuration-layer//declare-used-packages configuration-layer--used-layers)
   ;; then load the functions and finally configure the layers
   (configuration-layer//load-layers-files configuration-layer--used-layers
-                        '("funcs.el"))
+                                          '("funcs.el"))
   (configuration-layer//configure-layers configuration-layer--used-layers)
   ;; load layers lazy settings
   (configuration-layer/load-auto-layer-file)
@@ -660,7 +661,7 @@ To prevent package from being installed or uninstalled set the variable
   ;; packages configuration above
   (configuration-layer//set-layers-variables configuration-layer--used-layers)
   (configuration-layer//load-layers-files configuration-layer--used-layers
-                        '("keybindings.el"))
+                                          '("keybindings.el"))
   (when (spacemacs-is-dumping-p)
     ;; dump stuff in layers
     (dolist (layer-name configuration-layer--used-layers)
@@ -685,8 +686,8 @@ layer directory."
   (interactive)
   (let* ((current-layer-paths (mapcar (lambda (dir) (expand-file-name dir))
                                       (cl-pushnew
-                               configuration-layer-private-layer-directory
-                               dotspacemacs-configuration-layer-path)))
+                                       configuration-layer-private-layer-directory
+                                       dotspacemacs-configuration-layer-path)))
          (other-choice "Another directory...")
          (helm-lp-source
           `((name . "Configuration Layer Paths")
@@ -702,12 +703,12 @@ layer directory."
          (layer-path (cond
                       ((string-equal layer-path-sel other-choice)
                        (read-directory-name (concat "Other configuration "
-                                                    "layer path: ") "~/" ))
+                                                    "layer path: ") "~/"))
                       ((member layer-path-sel current-layer-paths)
                        layer-path-sel)
                       (t
                        (error "Please select an option from the list"))))
-         (name (read-from-minibuffer "Configuration layer name: " ))
+         (name (read-from-minibuffer "Configuration layer name: "))
          (layer-dir (concat layer-path "/" name)))
     (cond
      ((string-equal "" name)
@@ -940,7 +941,7 @@ a new object."
   (purecopy (concat "mouse-2, RET: show a description of this package.")))
 
 (defun configuration-layer/describe-package (pkg-symbol
-                            &optional layer-list pkg-list)
+                                             &optional layer-list pkg-list)
   "Describe a package in the context of the configuration layer system."
   (interactive
    (list (intern
@@ -1148,21 +1149,21 @@ USEDP non-nil means that PKG is a used layer."
 (defun configuration-layer/get-layer (layer-name)
   "Return a layer object with name LAYER-NAME.
 Return nil if layer object is not found."
-  (when (ht-contains? configuration-layer--indexed-layers layer-name)
-    (ht-get configuration-layer--indexed-layers layer-name)))
+  (when (spacemacs-ht-contains? configuration-layer--indexed-layers layer-name)
+    (spacemacs-ht-get configuration-layer--indexed-layers layer-name)))
 
 (defun configuration-layer/get-layers-list ()
   "Return a list of all discovered layer symbols."
-  (ht-keys configuration-layer--indexed-layers))
+  (spacemacs-ht-keys configuration-layer--indexed-layers))
 
 (defun configuration-layer/get-layer-local-dir (layer)
   "Return the value of SLOT for the given LAYER."
-  (let ((obj (ht-get configuration-layer--indexed-layers layer)))
+  (let ((obj (spacemacs-ht-get configuration-layer--indexed-layers layer)))
     (when obj (concat (oref obj :dir) "local/"))))
 
 (defun configuration-layer/get-layer-path (layer)
   "Return the path for LAYER symbol."
-  (let ((obj (ht-get configuration-layer--indexed-layers layer)))
+  (let ((obj (spacemacs-ht-get configuration-layer--indexed-layers layer)))
     (when obj (oref obj :dir))))
 
 (defun configuration-layer//add-package (pkg &optional usedp)
@@ -1175,28 +1176,29 @@ USEDP non-nil means that PKG is a used package."
 
 (defun configuration-layer/get-packages-list ()
   "Return a list of all package symbols."
-  (ht-keys configuration-layer--indexed-packages))
+  (spacemacs-ht-keys configuration-layer--indexed-packages))
 
 (defun configuration-layer/get-package (pkg-name)
   "Return a package object with name PKG-NAME.
 Return nil if package object is not found."
-  (when (ht-contains? configuration-layer--indexed-packages pkg-name)
-    (ht-get configuration-layer--indexed-packages pkg-name)))
+  (when (spacemacs-ht-contains? configuration-layer--indexed-packages pkg-name)
+    (spacemacs-ht-get configuration-layer--indexed-packages pkg-name)))
 
 (defun configuration-layer//sort-packages (packages)
   "Return a sorted list of PACKAGES objects."
   (sort packages (lambda (x y) (string< (symbol-name x) (symbol-name y)))))
 
-(defun configuration-layer/make-all-packages (&optional skip-layer-discovery)
+(defun configuration-layer/make-all-packages (&optional skip-layer-discovery skip-layer-deps)
   "Create objects for _all_ packages supported by Spacemacs.
-If SKIP-LAYER-DISCOVERY is non-nil then do not check for new layers."
+If SKIP-LAYER-DISCOVERY is non-nil then do not check for new layers.
+If SKIP-LAYER-DEPS is non-nil then skip declaration of layer dependencies."
   (let ((all-layers (configuration-layer/get-layers-list))
         (configuration-layer--load-packages-files t)
         (configuration-layer--package-properties-read-onlyp t)
         (configuration-layer--inhibit-warnings t))
     (unless skip-layer-discovery
       (configuration-layer/discover-layers))
-    (configuration-layer/declare-layers all-layers)
+    (configuration-layer/declare-layers all-layers skip-layer-deps)
     (configuration-layer/make-packages-from-layers all-layers)))
 
 (defun configuration-layer/make-packages-from-layers
@@ -1271,8 +1273,8 @@ USEDP if non-nil indicates that made packages are used packages."
            'auto-mode-alist
            `(,ext . (lambda ()
                       (configuration-layer//auto-mode
-                       ',layer-name ',mode))))
-          ))
+                       ',layer-name ',mode))))))
+
       ;; configure `interpreter-mode-alist'
       (when interpreter
         (let ((regex (car interpreter))
@@ -1280,7 +1282,7 @@ USEDP if non-nil indicates that made packages are used packages."
           (add-to-list
            'interpreter-mode-alist
            `(,regex . (lambda () (configuration-layer//auto-mode
-                               ',layer-name ',mode)))))))))
+                                  ',layer-name ',mode)))))))))
 
 (defun configuration-layer//auto-mode (layer-name mode)
   "Auto mode support of lazily installed layers."
@@ -1461,14 +1463,16 @@ discovery."
                 ;; layer not found, add it to search path
                 (setq search-paths (cons sub search-paths)))))))))))
 
-(defun configuration-layer/declare-layers (layers-specs)
+(defun configuration-layer/declare-layers (layers-specs &optional skip-layer-deps)
   "Declare layers with LAYERS-SPECS."
-  (mapc 'configuration-layer/declare-layer layers-specs))
+  (dolist (specs layers-specs)
+    (configuration-layer/declare-layer specs skip-layer-deps)))
 
-(defun configuration-layer/declare-layer (layer-specs)
+(defun configuration-layer/declare-layer (layer-specs &optional skip-layer-deps)
   "Declare a single layer with spec LAYER-SPECS.
 Set the variable `configuration-layer--declared-layers-usedp' to control
-whether the declared layer is an used one or not."
+whether the declared layer is an used one or not.
+If `SKIP-LAYER-DEPS' is non nil then skip loading of layer dependenciesl"
   (let* ((layer-name (if (listp layer-specs) (car layer-specs) layer-specs))
          (layer (configuration-layer/get-layer layer-name))
          (usedp configuration-layer--declared-layers-usedp))
@@ -1479,7 +1483,8 @@ whether the declared layer is an used one or not."
                     usedp)))
           (configuration-layer//add-layer obj usedp)
           (configuration-layer//set-layer-variables obj)
-          (when (and (not (oref layer :deps-loaded))
+          (when (and (not skip-layer-deps)
+                     (not (oref layer :deps-loaded))
                      (or usedp configuration-layer--load-packages-files))
             (oset layer :deps-loaded t)
             (configuration-layer//load-layer-files layer-name '("layers.el"))))
@@ -1601,7 +1606,7 @@ RNAME is the name symbol of another existing layer."
   (or (eq 'dotfile layer-name)
       (let ((obj (configuration-layer/get-layer layer-name)))
         (when obj (and (not (cfgl-layer-get-shadowing-layers obj))
-                   (memq layer-name configuration-layer--used-layers))))))
+                       (memq layer-name configuration-layer--used-layers))))))
 (defalias 'configuration-layer/layer-usedp
   'configuration-layer/layer-used-p)
 
@@ -1708,7 +1713,7 @@ RNAME is the name symbol of another existing layer."
             (configuration-layer//install-from-recipe pkg)
             (cfgl-package-set-property pkg :lazy-install nil))
            (t (configuration-layer//warning "Cannot install package %S."
-                                        pkg-name)))
+                                            pkg-name)))
         ('error
          (configuration-layer//error
           (concat "\nAn error occurred while installing %s "
@@ -2165,10 +2170,11 @@ to update."
         (spacemacs-buffer/append
          (format "\n--> %s package(s) to be updated.\n" upgraded-count))
         (spacemacs-buffer/append
-         (format
-          (concat "\nEmacs has to be restarted to actually install the "
-                  "new version of the packages%s.\n")
-          (if (member "restart-emacs" update-packages) "" " (SPC q r)")))
+         (format "\nRestart Emacs to install the updated packages. %s\n"
+                 (if (member 'restart-emacs update-packages)
+                     (concat "\n(SPC q r) won't work this time, because the"
+                             "\nrestart-emacs package is being updated.")
+                   "(SPC q r)")))
         (configuration-layer//cleanup-rollback-directory)
         (spacemacs//redisplay)))
     (when (eq upgrade-count 0)
@@ -2266,7 +2272,7 @@ depends on it."
              (deps (configuration-layer//get-package-deps-from-alist pkg-sym)))
         (dolist (dep deps)
           (let* ((dep-sym (car dep))
-                 (value (ht-get result dep-sym)))
+                 (value (spacemacs-ht-get result dep-sym)))
             (puthash dep-sym
                      (if value (add-to-list 'value pkg-sym) (list pkg-sym))
                      result)))))
@@ -2295,8 +2301,8 @@ depends on it."
   "Returns not nil if PKG-NAME is the name of an orphan package."
   (unless (or (memq pkg-name dist-pkgs)
               (memq pkg-name configuration-layer--protected-packages))
-    (if (ht-contains? dependencies pkg-name)
-        (let ((parents (ht-get dependencies pkg-name)))
+    (if (spacemacs-ht-contains? dependencies pkg-name)
+        (let ((parents (spacemacs-ht-get dependencies pkg-name)))
           (cl-reduce (lambda (x y) (and x y))
                      (mapcar (lambda (p) (configuration-layer//is-package-orphan
                                           p dist-pkgs dependencies))
@@ -2352,15 +2358,27 @@ depends on it."
     (unless (string-empty-p version-string)
       (version-to-list version-string))))
 
+(defun configuration-layer//system-package-p (pkg-desc)
+  "Take `PKG-DESC' and return true if it is a system package."
+  (not (string-prefix-p
+        (file-name-as-directory
+         (expand-file-name package-user-dir))
+        (expand-file-name
+         (package-desc-dir pkg-desc)))))
+
 (defun configuration-layer//package-delete (pkg-name)
   "Delete package with name PKG-NAME."
   (cond
    ((version<= "25.0.50" emacs-version)
     (let ((p (cadr (assq pkg-name package-alist))))
       ;; add force flag to ignore dependency checks in Emacs25
-      (when p (package-delete p t t))))
+      (if (not (configuration-layer//system-package-p p))
+          (package-delete p t t)
+        (message "Would have removed package %s but this is a system package so it has not been changed." pkg-name))))
    (t (let ((p (cadr (assq pkg-name package-alist))))
-        (when p (package-delete p))))))
+        (if (not (configuration-layer//system-package-p p))
+            (package-delete p)
+          (message "Would have removed package %s but this is a system package so it has not been changed." pkg-name))))))
 
 (defun configuration-layer/delete-orphan-packages (packages)
   "Delete PACKAGES if they are orphan."
@@ -2409,9 +2427,9 @@ depends on it."
                    (eq auto-mode mode))
           (push (car x) gather-extensions))))
     (when gather-extensions
-        (concat "\\("
-                (string-join gather-extensions "\\|")
-                "\\)"))))
+      (concat "\\("
+              (string-join gather-extensions "\\|")
+              "\\)"))))
 
 (defun configuration-layer//lazy-install-extensions-for-layer (layer-name)
   "Return an alist of owned modes and extensions for the passed layer."
@@ -2441,7 +2459,7 @@ depends on it."
   (let ((layer-name
          (intern (completing-read
                   "Choose a used layer"
-                  (sort (copy-list configuration-layer--used-layers) #'string<)))))
+                  (sort (cl-copy-list configuration-layer--used-layers) #'string<)))))
     (let ((mode-exts (configuration-layer//lazy-install-extensions-for-layer
                       layer-name)))
       (dolist (x mode-exts)
@@ -2471,7 +2489,7 @@ depends on it."
                  (cadr (assq 'built-in stats))))
         (spacemacs-buffer//center-line)
         (spacemacs-buffer/append (format "\n(%.3fs spent in your user-config)"
-                           dotspacemacs--user-config-elapsed-time))
+                                         dotspacemacs--user-config-elapsed-time))
         (spacemacs-buffer//center-line)
         (insert "\n")))))
 
@@ -2479,7 +2497,7 @@ depends on it."
   "Return a list of all ELPA packages in indexed packages and dependencies."
   (let (result)
     (dolist (pkg-sym (configuration-layer//filter-distant-packages
-                      (ht-keys configuration-layer--indexed-packages) nil))
+                      (spacemacs-ht-keys configuration-layer--indexed-packages) nil))
       (when (assq pkg-sym package-archive-contents)
         (let* ((deps (mapcar 'car
                              (configuration-layer//get-package-deps-from-archive
@@ -2502,9 +2520,9 @@ depends on it."
                      ,(package-desc-extras obj)])))
 
 (defun configuration-layer//patch-package-descriptor (desc)
-  "Return a patched DESC.
-The URL of the descriptor is patched to be the passed URL"
-  )
+  "Return a patched DESC.))))))
+The URL of the descriptor is patched to be the passed URL")
+
 
 (defun configuration-layer//download-elpa-file
     (pkg-name filename archive-url output-dir
@@ -2587,7 +2605,7 @@ Returns nil if the version is unknown."
   (when (file-exists-p configuration-layer--stable-elpa-version-file)
     (with-current-buffer (find-file-noselect
                           configuration-layer--stable-elpa-version-file)
-      (when (called-interactively-p)
+      (when (called-interactively-p 'interactive)
         (message "Stable ELPA repository version is: %s" (buffer-string)))
       (buffer-string))))
 
@@ -2635,7 +2653,7 @@ MSG is an additional message append to the generic error."
   (with-current-buffer (find-file-noselect
                         configuration-layer--stable-elpa-version-file)
     (erase-buffer)
-    (beginning-of-buffer)
+    (goto-char (point-min))
     (insert (format "%s" configuration-layer-stable-elpa-version))
     (save-buffer)))
 

@@ -11,6 +11,7 @@
 
 (defconst ruby-packages
   '(
+    add-node-modules-path
     bundler
     chruby
     company
@@ -24,6 +25,7 @@
     minitest
     org
     popwin
+    prettier-js
     rake
     rbenv
     robe
@@ -61,6 +63,9 @@
     :init (spacemacs/add-to-hooks 'chruby-use-corresponding
                                   '(ruby-mode-hook enh-ruby-mode-hook))))
 
+(defun ruby/post-init-add-node-modules-path ()
+  (spacemacs/add-to-hooks #'add-node-modules-path '(ruby-mode-hook)))
+
 (defun ruby/post-init-company ()
   (add-hook 'ruby-mode-local-vars-hook #'spacemacs//ruby-setup-company))
 
@@ -80,21 +85,24 @@
   (use-package enh-ruby-mode
     :mode (("Appraisals\\'" . enh-ruby-mode)
            ("\\(Rake\\|Thor\\|Guard\\|Gem\\|Cap\\|Vagrant\\|Berks\\|Pod\\|Puppet\\)file\\'" . enh-ruby-mode)
-           ("\\.\\(rb\\|rabl\\|ru\\|builder\\|rake\\|thor\\|gemspec\\|jbuilder\\)\\'" . enh-ruby-mode))
+           ("\\.\\(rb\\|rabl\\|ru\\|builder\\|rake\\|thor\\|gemspec\\|jbuilder\\|pryrc\\)\\'" . enh-ruby-mode))
     :interpreter "ruby"
     :init
     (progn
       (setq enh-ruby-deep-indent-paren nil
             enh-ruby-hanging-paren-deep-indent-level 2)
+      (spacemacs/declare-prefix-for-mode 'enh-ruby-mode "mi" "insert")
       (spacemacs/declare-prefix-for-mode 'enh-ruby-mode "mt" "test")
-      (spacemacs/declare-prefix-for-mode 'enh-ruby-mode "mT" "toggle")
 
       (add-hook 'enh-ruby-mode-hook #'spacemacs//ruby-setup-backend)
       (add-hook 'enh-ruby-mode-local-vars-hook
                 #'spacemacs/ruby-maybe-highlight-debugger-keywords))
     :config
     (spacemacs/set-leader-keys-for-major-mode 'enh-ruby-mode
-      "T{" 'enh-ruby-toggle-block)))
+      "if"  'spacemacs/ruby-insert-frozen-string-literal-comment
+      "is"  'spacemacs/ruby-insert-shebang
+      "r{" 'enh-ruby-toggle-block
+      "r}" 'enh-ruby-toggle-block)))
 
 (defun ruby/post-init-evil-matchit ()
   (dolist (hook '(ruby-mode-hook enh-ruby-mode-hook))
@@ -137,6 +145,10 @@
 (defun ruby/pre-init-org ()
   (spacemacs|use-package-add-hook org
     :post-config (add-to-list 'org-babel-load-languages '(ruby . t))))
+
+(defun ruby/pre-init-prettier-js ()
+  (add-to-list 'spacemacs--prettier-modes 'ruby-mode)
+  (add-to-list 'spacemacs--prettier-modes 'enh-ruby-mode))
 
 (defun ruby/pre-init-popwin ()
   (spacemacs|use-package-add-hook popwin
@@ -279,9 +291,11 @@
   (use-package ruby-mode
     :defer t
     :mode (("Appraisals\\'" . ruby-mode)
-           ("Puppetfile" . ruby-mode))
+            ("\\(Rake\\|Thor\\|Guard\\|Gem\\|Cap\\|Vagrant\\|Berks\\|Pod\\|Puppet\\)file\\'" . ruby-mode)
+            ("\\.\\(rb\\|rabl\\|ru\\|builder\\|rake\\|thor\\|gemspec\\|jbuilder\\|pryrc\\)\\'" . ruby-mode))
     :init
     (progn
+      (spacemacs/declare-prefix-for-mode 'ruby-mode "mi" "insert")
       (spacemacs/declare-prefix-for-mode 'ruby-mode "mt" "test")
       (spacemacs/declare-prefix-for-mode 'ruby-mode "mT" "toggle")
 
@@ -290,9 +304,20 @@
       (add-hook 'ruby-mode-hook #'spacemacs//ruby-setup-backend)
       (add-hook 'ruby-mode-local-vars-hook
                 #'spacemacs/ruby-maybe-highlight-debugger-keywords))
-    :config (spacemacs/set-leader-keys-for-major-mode 'ruby-mode
-              "T'" 'ruby-toggle-string-quotes
-              "T{" 'ruby-toggle-block)))
+    :config
+    (progn
+      ;; This might have been important 10 years ago but now it's frustrating.
+      (setq ruby-insert-encoding-magic-comment nil)
+
+      (when ruby-prettier-on-save
+        (add-hook 'ruby-mode-hook 'spacemacs/ruby-fmt-before-save-hook))
+      (spacemacs/set-leader-keys-for-major-mode 'ruby-mode
+        "if"  'spacemacs/ruby-insert-frozen-string-literal-comment
+        "is"  'spacemacs/ruby-insert-shebang
+        "r'"  'ruby-toggle-string-quotes
+        "r\"" 'ruby-toggle-string-quotes
+        "r{"  'ruby-toggle-block
+        "r}"  'ruby-toggle-block))))
 
 (defun ruby/init-ruby-refactor ()
   (use-package ruby-refactor

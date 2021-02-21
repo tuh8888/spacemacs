@@ -1,6 +1,6 @@
 ;;; funcs.el --- Java functions File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Lukasz Klich <klich.lukasz@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -80,24 +80,6 @@
   (interactive)
   (mvn-clean)
   (mvn-compile))
-
-
-;; Gradle
-
-(defun spacemacs/gradle-clean ()
-  "Execute 'gradle clean' command."
-  (interactive)
-  (gradle-execute "clean"))
-
-(defun spacemacs/gradle-clean-build ()
-  "Execute 'gradle clean build' command."
-  (interactive)
-  (gradle-execute "clean build"))
-
-(defun spacemacs/gradle-test-buffer ()
-  "Execute 'gradle test' command against current buffer tests."
-  (interactive)
-  (gradle-single-test (file-name-base (buffer-file-name))))
 
 
 ;; Misc
