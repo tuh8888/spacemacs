@@ -209,20 +209,22 @@
         (kbd "gr") 'magit-list-repositories
         (kbd "RET") 'magit-repolist-status)
       ;; confirm/abort
+
       (when dotspacemacs-major-mode-leader-key
         (add-hook 'with-editor-mode-hook 'evil-normalize-keymaps)
         (let ((mm-key dotspacemacs-major-mode-leader-key))
           (dolist (state '(normal motion))
             (evil-define-key state with-editor-mode-map
-              (concat (kbd mm-key) (kbd mm-key)) 'with-editor-finish
-              (concat (kbd mm-key) "a")    'with-editor-cancel
-              (concat (kbd mm-key) "c")    'with-editor-finish
-              (concat (kbd mm-key) "k")    'with-editor-cancel)
+              (vconcat (kbd mm-key) (kbd mm-key)) 'with-editor-finish
+              (vconcat (kbd mm-key) "a")    'with-editor-cancel
+              (vconcat (kbd mm-key) "c")    'with-editor-finish
+              (vconcat (kbd mm-key) "k")    'with-editor-cancel)
             (evil-define-key state magit-log-select-mode-map
-              (concat (kbd mm-key) (kbd mm-key)) 'magit-log-select-pick
-              (concat (kbd mm-key) "a")    'magit-log-select-quit
-              (concat (kbd mm-key) "c")    'magit-log-select-pick
-              (concat (kbd mm-key) "k")    'magit-log-select-quit))))
+              (vconcat (kbd mm-key) (kbd mm-key)) 'magit-log-select-pick
+              (vconcat (kbd mm-key) "a")    'magit-log-select-quit
+              (vconcat (kbd mm-key) "c")    'magit-log-select-pick
+              (vconcat (kbd mm-key) "k")    'magit-log-select-quit))))
+      
       ;; whitespace
       (define-key magit-status-mode-map (kbd "C-S-w")
         'spacemacs/magit-toggle-whitespace)
