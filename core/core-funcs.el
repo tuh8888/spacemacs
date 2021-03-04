@@ -372,10 +372,11 @@ is not visible. Otherwise delegates to regular Emacs next-error."
 (defun spacemacs/next-error (&optional n reset)
   "Dispatch to flycheck or standard emacs error."
   (interactive "P")
-  (let ((sys (spacemacs/error-delegate)))
-    (cond
-     ((eq 'flycheck sys) (call-interactively 'flycheck-next-error))
-     ((eq 'emacs sys) (call-interactively 'next-error)))))
+  (evil-without-repeat
+    (let ((sys (spacemacs/error-delegate)))
+      (cond
+       ((eq 'flycheck sys) (call-interactively 'flycheck-next-error))
+       ((eq 'emacs sys) (call-interactively 'next-error))))))
 
 (defun spacemacs/last-error ()
   "Go to last flycheck or standard emacs error."
@@ -387,10 +388,11 @@ is not visible. Otherwise delegates to regular Emacs next-error."
 (defun spacemacs/previous-error (&optional n reset)
   "Dispatch to flycheck or standard emacs error."
   (interactive "P")
-  (let ((sys (spacemacs/error-delegate)))
-    (cond
-     ((eq 'flycheck sys) (call-interactively 'flycheck-previous-error))
-     ((eq 'emacs sys) (call-interactively 'previous-error)))))
+  (evil-without-repeat
+    (let ((sys (spacemacs/error-delegate)))
+      (cond
+       ((eq 'flycheck sys) (call-interactively 'flycheck-previous-error))
+       ((eq 'emacs sys) (call-interactively 'previous-error))))))
 
 (defvar-local spacemacs--gne-min-line nil
   "The first line in the buffer that is a valid result.")
