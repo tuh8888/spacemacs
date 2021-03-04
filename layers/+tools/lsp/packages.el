@@ -28,7 +28,7 @@
       (setq lsp-prefer-capf t)
       (add-hook 'lsp-after-open-hook (lambda ()
                                        "Setup xref jump handler"
-                                       (spacemacs//setup-lsp-jump-handler))))))
+                                       (add-to-list 'spacemacs-jump-handlers 'lsp-find-definition))))))
 
 (defun lsp/init-lsp-ui ()
   (use-package lsp-ui
