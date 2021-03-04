@@ -75,7 +75,7 @@ sets `spacemacs-reference-handlers' in buffers of that mode."
           (ignore-errors
             (call-interactively handler))
           (when (or (eq async t)
-                    (and (fboundp async) (funcall async))
+                    ;(and (fboundp async) (funcall async))
                     (not (eq old-point (point)))
                     (not (equal old-buffer (current-buffer))))
             (throw 'done t)))))
