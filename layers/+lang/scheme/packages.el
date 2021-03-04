@@ -17,7 +17,7 @@
         ggtags
         counsel-gtags
         helm-gtags
-        parinfer
+        parinfer-rust-mode
         ))
 
 (defun scheme/post-init-company ()
@@ -92,5 +92,5 @@
 (defun scheme/post-init-helm-gtags ()
   (spacemacs/helm-gtags-define-keys-for-mode 'scheme-mode))
 
-(defun scheme/post-init-parinfer ()
-  (add-hook 'scheme-mode-hook 'parinfer-mode))
+(defun scheme/post-init-parinfer-rust-mode ()
+  (add-hook 'scheme-mode-hook 'parinfer-rust-mode))

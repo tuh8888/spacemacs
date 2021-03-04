@@ -19,7 +19,7 @@
         counsel-gtags
         helm
         helm-gtags
-        parinfer
+        parinfer-rust-mode
         rainbow-identifiers
         slime
         (slime-company :requires company)
@@ -61,8 +61,8 @@
 (defun common-lisp/post-init-helm-gtags ()
   (spacemacs/helm-gtags-define-keys-for-mode 'common-lisp-mode))
 
-(defun common-lisp/post-init-parinfer ()
-  (add-hook 'lisp-mode-hook 'parinfer-mode))
+(defun common-lisp/post-init-parinfer-rust-mode ()
+  (add-hook 'lisp-mode-hook 'parinfer-rust-mode))
 
 (defun common-lisp/post-init-rainbow-identifiers ()
   (add-hook 'lisp-mode-hook #'colors//rainbow-identifiers-ignore-keywords))

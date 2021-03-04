@@ -31,7 +31,7 @@
         macrostep
         nameless
         overseer
-        parinfer
+        parinfer-rust-mode
         rainbow-identifiers
         semantic
         smartparens
@@ -289,8 +289,8 @@
 (defun emacs-lisp/post-init-ggtags ()
   (add-hook 'emacs-lisp-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
 
-(defun emacs-lisp/post-init-parinfer ()
-  (add-hook 'emacs-lisp-mode-hook 'parinfer-mode))
+(defun emacs-lisp/post-init-parinfer-rust-mode ()
+  (add-hook 'emacs-lisp-mode-hook 'parinfer-rust-mode))
 
 (defun emacs-lisp/post-init-rainbow-identifiers ()
   (add-hook 'emacs-lisp-mode-hook #'colors//rainbow-identifiers-ignore-keywords))
