@@ -1,6 +1,6 @@
 ;;; packages.el --- Common Lisp Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -61,9 +61,6 @@
 (defun common-lisp/post-init-helm-gtags ()
   (spacemacs/helm-gtags-define-keys-for-mode 'common-lisp-mode))
 
-(defun common-lisp/post-init-parinfer-rust-mode ()
-  (add-hook 'lisp-mode-hook 'parinfer-rust-mode))
-
 (defun common-lisp/post-init-rainbow-identifiers ()
   (add-hook 'lisp-mode-hook #'colors//rainbow-identifiers-ignore-keywords))
 
@@ -90,12 +87,7 @@
       ;; enable fuzzy matching in code buffer and SLIME REPL
       (setq slime-complete-symbol*-fancy t)
       (setq slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
-      ;; enabel smartparen in code buffer and SLIME REPL
-      ;; (add-hook 'slime-repl-mode-hook #'smartparens-strict-mode)
-      (defun slime/disable-smartparens ()
-        (smartparens-strict-mode -1)
-        (turn-off-smartparens-mode))
-      (add-hook 'slime-repl-mode-hook #'slime/disable-smartparens)
+      (add-hook 'slime-repl-mode-hook #'spacemacs//deactivate-smartparens)
       (spacemacs/add-to-hooks 'slime-mode '(lisp-mode-hook)))
     :config
     (progn
@@ -150,8 +142,8 @@
         ;; Add key bindings for custom eval functions
         "ec" 'spacemacs/cl-eval-current-form-sp
         "eC" 'spacemacs/cl-eval-current-form
-        "es" 'spacemacs/cl-eval-current-symbol-sp
-        )
+        "es" 'spacemacs/cl-eval-current-symbol-sp)
+
       ;; prefix names for which-key
       (mapc (lambda (x)
               (spacemacs/declare-prefix-for-mode 'lisp-mode (car x) (cdr x)))

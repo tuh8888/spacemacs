@@ -1,6 +1,6 @@
 ;;; packages.el --- Emacs Lisp Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2021 Sylvain Benner & Contributors
 ;;
 ;; Author: Sylvain Benner <sylvain.benner@gmail.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -92,6 +92,16 @@
         (spacemacs/set-leader-keys-for-major-mode mode
           "df" 'spacemacs/edebug-instrument-defun-on
           "dF" 'spacemacs/edebug-instrument-defun-off))
+      (spacemacs/declare-prefix-for-mode 'edebug-eval-mode "mg" "goto")
+      (spacemacs/declare-prefix-for-mode 'edebug-eval-mode "me" "eval")
+      (spacemacs/set-leader-keys-for-major-mode 'edebug-eval-mode
+        "gw" 'edebug-where
+        "a" 'edebug-delete-eval-item
+        "k" 'edebug-delete-eval-item
+        "," 'edebug-update-eval-list
+        "c" 'edebug-update-eval-list
+        "ee" 'edebug-eval-last-sexp
+        "eE" 'edebug-eval-print-last-sexp)
       ;; since we evilify `edebug-mode-map' we don't need to intercept it to
       ;; make it work with evil
       (evil-set-custom-state-maps
@@ -202,40 +212,40 @@
         "dm" 'spacemacs/macrostep-transient-state/body))))
 
 (defun emacs-lisp/init-nameless ()
-    (use-package nameless
-      :defer (spacemacs/defer)
-      :init
-      (progn
-        (spacemacs|require-when-dumping 'nameless)
-        (setq
-         ;; always show the separator since it can have a semantic purpose
-         ;; like in Spacemacs where - is variable and / is a function.
-         ;; moreover it makes nameless work for all kind of separators.
-         nameless-separator nil
-         ;; Use > as the defautl prefix : is already used for
-         ;; keywords
-         nameless-prefix ">")
-        ;; some default aliases for Spacemacs source code
-        (setq nameless-global-aliases '(("SB" . "spacemacs-buffer")
-                                        ("S"  . "spacemacs")
-                                        (".S"  . "dotspacemacs")
-                                        ("CL" . "configuration-layer")))
-        ;; make `nameless-current-name' safe as a local variable for string
-        ;; values
-        (put 'nameless-current-name 'safe-local-variable #'stringp)
-        (spacemacs|diminish nameless-mode " 🅽" " [n]")
-        (spacemacs|add-toggle nameless
-          :status nameless-mode
-          :on (nameless-mode)
-          :off (nameless-mode -1)
-          :documentation "Hide package namespaces in your emacs-lisp code."
-          :evil-leader-for-mode (emacs-lisp-mode . "Tn"))
-        ;; activate nameless only when in a GUI
-        ;; in a terminal nameless triggers all sorts of graphical glitches.
-        (spacemacs|unless-dumping-and-eval-after-loaded-dump nameless
-          (spacemacs|do-after-display-system-init
-           (when emacs-lisp-hide-namespace-prefix
-             (spacemacs/toggle-nameless-on-register-hook-emacs-lisp-mode)))))))
+  (use-package nameless
+    :defer (spacemacs/defer)
+    :init
+    (progn
+      (spacemacs|require-when-dumping 'nameless)
+      (setq
+       ;; always show the separator since it can have a semantic purpose
+       ;; like in Spacemacs where - is variable and / is a function.
+       ;; moreover it makes nameless work for all kind of separators.
+       nameless-separator nil
+       ;; Use > as the defautl prefix : is already used for
+       ;; keywords
+       nameless-prefix ">")
+      ;; some default aliases for Spacemacs source code
+      (setq nameless-global-aliases '(("SB" . "spacemacs-buffer")
+                                      ("S"  . "spacemacs")
+                                      (".S"  . "dotspacemacs")
+                                      ("CL" . "configuration-layer")))
+      ;; make `nameless-current-name' safe as a local variable for string
+      ;; values
+      (put 'nameless-current-name 'safe-local-variable #'stringp)
+      (spacemacs|diminish nameless-mode " 🅽" " [n]")
+      (spacemacs|add-toggle nameless
+        :status nameless-mode
+        :on (nameless-mode)
+        :off (nameless-mode -1)
+        :documentation "Hide package namespaces in your emacs-lisp code."
+        :evil-leader-for-mode (emacs-lisp-mode . "Tn"))
+      ;; activate nameless only when in a GUI
+      ;; in a terminal nameless triggers all sorts of graphical glitches.
+      (spacemacs|unless-dumping-and-eval-after-loaded-dump nameless
+        (spacemacs|do-after-display-system-init
+         (when emacs-lisp-hide-namespace-prefix
+           (spacemacs/toggle-nameless-on-register-hook-emacs-lisp-mode)))))))
 
 (defun emacs-lisp/init-overseer ()
   (use-package overseer
@@ -288,9 +298,6 @@
 
 (defun emacs-lisp/post-init-ggtags ()
   (add-hook 'emacs-lisp-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
-
-(defun emacs-lisp/post-init-parinfer-rust-mode ()
-  (add-hook 'emacs-lisp-mode-hook 'parinfer-rust-mode))
 
 (defun emacs-lisp/post-init-rainbow-identifiers ()
   (add-hook 'emacs-lisp-mode-hook #'colors//rainbow-identifiers-ignore-keywords))
