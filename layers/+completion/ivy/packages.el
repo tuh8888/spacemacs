@@ -316,8 +316,7 @@
       ;; Use ivy-xref to display `xref.el' results.
       (setq xref-show-xrefs-function #'ivy-xref-show-xrefs))))
 
-(defun ivy/post-init-org ()
-  (add-hook 'org-ctrl-c-ctrl-c-hook 'spacemacs//counsel-org-ctrl-c-ctrl-c-org-tag))
+(defun ivy/post-init-org ())
 
 (defun ivy/pre-init-persp-mode ()
   (spacemacs|use-package-add-hook persp-mode
