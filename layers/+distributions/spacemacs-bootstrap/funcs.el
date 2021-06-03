@@ -255,8 +255,8 @@ the scroll transient state.")
      (SYMBOL STRING STRING)"
   (let ((default-mode (use-package-as-mode name)))
     (pcase arg
-      ;; (PATTERN PATTERN ..) when not recursive -> go to recursive case
-      ((and `(,x . ,y)
+      ;; (PATTERN ..) when not recursive -> go to recursive case
+      ((and (or `(,x . ,y) `(,x ,y))
             (guard (and (not recursed)
                         (listp x)
                         (listp y))))
@@ -309,7 +309,7 @@ the scroll transient state.")
   (let ((body (use-package-process-keywords name rest state)))
     (use-package-concat
      `((when (fboundp 'spacemacs|diminish)
-         ,@(if (consp (cadr arg)) ;; e.g. ((MODE1 FOO BAR) (MODE2 BAZ XYZ))
+         ,@(if (consp (car arg)) ;; e.g. ((MODE FOO BAR) ...)
                (mapcar #'(lambda (var) `(spacemacs|diminish ,@var))
                        arg)
              `((spacemacs|diminish ,@arg))))) ;; e.g. (MODE FOO BAR)
