@@ -19,7 +19,6 @@
         counsel-gtags
         helm
         helm-gtags
-        parinfer-rust-mode
         rainbow-identifiers
         slime
         (slime-company :requires company)

@@ -31,7 +31,6 @@
         macrostep
         nameless
         overseer
-        parinfer-rust-mode
         rainbow-identifiers
         semantic
         smartparens
