@@ -920,7 +920,6 @@ Headline^^            Visit entry^^               Filter^^                    Da
 (defun org/init-org-roam ()
   (use-package org-roam
     :defer t
-    :hook (after-init . org-roam-mode)
     :init
     (progn
       (spacemacs/declare-prefix "aor" "org-roam")
