@@ -23,7 +23,6 @@
 <p align="center">
 <a href="https://gitter.im/syl20bnr/spacemacs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"><img src="https://badges.gitter.im/Join Chat.svg" alt="Gitter"></a>
 <a href="https://github.com/syl20bnr/spacemacs/actions/workflows/elisp_test.yml"><img src="https://github.com/syl20bnr/spacemacs/actions/workflows/elisp_test.yml/badge.svg?branch=develop"></a>
-<a href="https://travis-ci.org/syl20bnr/spacemacs"><img src="https://travis-ci.org/syl20bnr/spacemacs.svg?branch=develop"></a>
 <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ESFVNPKP4Y742"><img src="https://img.shields.io/badge/Paypal-Donate-blue.svg" alt="Donate"></a>
 <a href="https://shop.spreadshirt.com/spacemacs-shop"><img src="https://img.shields.io/badge/Shop-T--Shirts-blue.svg" alt="Donate"></a>
 <a href="https://www.slant.co/topics/12/~what-are-the-best-programming-text-editors"><img src="https://img.shields.io/badge/Slant-Recommend-ff69b4.svg" alt="Recommend it"></a>
@@ -413,8 +412,7 @@ lines in the `~/.emacs.d/init.el` file:
 ```
 
 ## Spacemacs logo
-For Ubuntu users, follow this guide to
-[change the logo in Unity][cpaulik-unity-icon].
+For Linux users, create `spacemacs.desktop` in `~/.local/share/applications/` using [this](https://github.com/emacs-mirror/emacs/blob/master/etc/emacs.desktop) as a reference. Change the `Name` parameter to `Name=Spacemacs` and the `Icon` parameter to `Icon=/PATH/TO/EMACSD/core/banners/img/spacemacs.png` where `PATH/TO/EMACSD` is the path to your `.emacs.d` directory, usually `~/.emacs.d` or `~/.config/emacs`.
 
 For macOS users, you need to [download the .icns version of the logo][icon-repository],
 then [change the logo on the Dock][icon-mac-instructions].
